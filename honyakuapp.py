@@ -44,20 +44,7 @@ class Honyaku(tk.Tk):
         #スクリーンショットボタン
         self.sukusyo_button = tk.Button(self.main_border,text="スクリーンショット",command=self.sukusyo)
         self.sukusyo_button.pack()
-                
-        #ウィンドウが動いたりサイズが変わったりしたときのイベントを登録
-        self.bind("<Configure>", self.on_resize)
-        #位置表示ラベル
-        self.iti = tk.Label(self.main_border)
-        self.iti.pack()
 
-    def on_resize(self,event):
-        width = self.winfo_width()
-        height = self.winfo_height()
-        x = self.winfo_x()
-        y = self.winfo_y()
-        #表示を変える
-        self.iti.config(text=f'x:{x}, y:{y}, 高さ:{height}, 幅:{width}')
 
     #移動つまみの処理
     # 【クリックした瞬間のマウス座標を記録】
