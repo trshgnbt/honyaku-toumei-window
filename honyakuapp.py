@@ -24,8 +24,8 @@ class Honyaku(tk.Tk):
         self.main_border.place(x=0, y=30, relwidth=1.0, relheight=1.0, height=-30)
 
         # 閉じるボタン (×)
-        self.close_button = tk.Button(self.main_border, text=" × ", fg="white", bg="#2c3e50", activebackground="#e74c3c", activeforeground="white", bd=3, font=("Arial", 12), command=self.destroy)
-        self.close_button.place(relx=1.0, y=0, anchor="se")
+        self.close_button = tk.Button(self, text=" × ", fg="white", bg="#2c3e50", activebackground="#e74c3c", activeforeground="white", bd=3, font=("Arial", 12), command=self.destroy)
+        self.close_button.place(relx=1.0, y=30, anchor="se")
 
         # Sizegrip
         self.sizegrip = ttk.Sizegrip(self.main_border)
