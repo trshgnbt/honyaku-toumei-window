@@ -37,7 +37,6 @@ class Honyaku(tk.Tk):
         self.idou_tumami.bind("<Button-1>", self.start_move)
         self.idou_tumami.bind("<B1-Motion>", self.do_move)
 
-
         #透明部分
         self.toumei_frame = tk.Frame(self.main_border,bg=Honyaku.TOUMEI_IRO)
         self.toumei_frame.pack(fill='both', expand=True)
@@ -81,9 +80,9 @@ class Honyaku(tk.Tk):
     #スクリーンショットボタンの処理
     def sukusyo(self):
         width = self.winfo_width()
-        height = self.winfo_height()
+        height = self.winfo_height() -30
         x = self.winfo_x()
-        y = self.winfo_y()
+        y = self.winfo_y() +30
         img = pyautogui.screenshot('temp.png', region=(x, y, width, height))
 
 if __name__ == "__main__":    
