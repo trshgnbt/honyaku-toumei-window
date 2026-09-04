@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
-from PIL import ImageGrab
+import easyocr
 from deep_translator import GoogleTranslator
 import pyautogui
+import numpy as np
 from typing import Final
 
 class Honyaku(tk.Tk):
@@ -71,6 +72,26 @@ class Honyaku(tk.Tk):
         x = self.winfo_x()
         y = self.winfo_y() +30
         img = pyautogui.screenshot('temp.png', region=(x, y, width, height))
+
+        #numpy配列に変換する
+        img_np = np.array(img)
+        #OCR
+        ocr_reader = easyocr.Reader(['en'])
+        ocr_result = ocr_reader.readtext(img_np)
+
+        #翻訳する
+        translator = GoogleTranslator(source='en', target='ja')
+        for box, text, confidence in ocr_result:                
+            # 1行ずつ翻訳する
+            translated_text = translator.translate(text)
+            
+            # 元の英語と、翻訳した日本語を表示
+            print(f"元データ: {text}")
+            print(f"翻訳結果: {translated_text}")
+            print("-" * 30)
+
+        print("翻訳完了")
+
 
 if __name__ == "__main__":    
     app = Honyaku()
