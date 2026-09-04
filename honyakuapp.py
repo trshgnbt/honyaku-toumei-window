@@ -91,6 +91,7 @@ class Honyaku(tk.Tk):
             print("-" * 30)
 
         print("翻訳完了")
+        
 
 
 if __name__ == "__main__":    
