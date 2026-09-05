@@ -44,6 +44,7 @@ class DragHandle(tk.Label):
         new_y = self.target_window.winfo_y() + delta_y
         self.target_window.geometry(f"+{new_x}+{new_y}")
 
+#作業中
 class MinimizeButton(tk.Button):
     def __init__(self,master, **kwargs):
         default_style = {

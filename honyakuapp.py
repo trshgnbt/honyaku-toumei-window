@@ -13,6 +13,8 @@ class Honyaku(tk.Tk):
     
     def __init__(self):
         super().__init__()
+
+        self._is_minimized = False
        
         self.title("タイトル")
         self.geometry("400x300+200+100")
@@ -31,13 +33,24 @@ class Honyaku(tk.Tk):
         
         #移動つまみ
         self.idou_tumami = DragHandle(self)
-        self.idou_tumami.place(relx=1.0, x=-40, y=30, anchor="se", width=100, height=28)
+        self.idou_tumami.place(relx=1.0, x=-80, y=30, anchor="se", width=100, height=30)
 
         #最小化ボタン
-
+        self.saisyouka_button = tk.Button(
+            self,
+            text =" - ",
+            fg = "white",
+            bg= "#2c3e50",
+            activebackground= "#3c3fe7",
+            activeforeground= "white",
+            bd= 3,
+            font= ("Arial", 12),
+            command=self.saisyouka
+        )
+        self.saisyouka_button.place(relx=1.0, x=-40, y=30, anchor="se", height=30)
 
         # Sizegrip
-        self.sizegrip = ttk.Sizegrip(self.main_border)
+        self.sizegrip = ttk.Sizegrip(self)
         self.sizegrip.pack(anchor='se',side='right')
 
         #透明部分
@@ -48,6 +61,23 @@ class Honyaku(tk.Tk):
         self.sukusyo_button = tk.Button(self.main_border,text="スクリーンショット",command=self.sukusyo)
         self.sukusyo_button.pack()
 
+        #最小化から戻した時に検知
+        self.bind("<Map>", self.on_deiconify)
+
+
+    #最小化から戻した時の処理
+    def on_deiconify(self, event=None):
+        if event is not None and event.widget != self:
+            return
+        if self._is_minimized and self.state() == 'normal':
+            self._is_minimized = False  # 先にフラグを倒す→再帰呼び出しを弾く
+            self.overrideredirect(True)
+
+    #最小化させる処理
+    def saisyouka(self):
+        self._is_minimized = True
+        self.overrideredirect(False)
+        self.iconify()
 
     #スクリーンショットボタンの処理
     def sukusyo(self):
