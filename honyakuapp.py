@@ -6,7 +6,7 @@ import pyautogui
 import numpy as np
 from typing import Final
 
-from button_commons import CloseButton, DragHandle
+from button_commons import CloseButton, DragHandle, MinimizeButton
 
 class Honyaku(tk.Tk):
     TOUMEI_IRO: Final = "#124356"
@@ -17,7 +17,7 @@ class Honyaku(tk.Tk):
         self.title("タイトル")
         self.geometry("400x300+200+100")
         self.wm_attributes("-topmost", True)#最前面
-        self.overrideredirect(True)
+        self.overrideredirect(True)#枠非表示
         self.attributes("-transparentcolor", Honyaku.TOUMEI_IRO)#透明にする色を指定
         self.configure(bg=Honyaku.TOUMEI_IRO)  # ウィンドウ自体の背景を透明色にする
 
@@ -28,14 +28,17 @@ class Honyaku(tk.Tk):
         # 閉じるボタン (×)
         self.close_button = CloseButton(self)
         self.close_button.place(relx=1.0, y=30, anchor="se")
+        
+        #移動つまみ
+        self.idou_tumami = DragHandle(self)
+        self.idou_tumami.place(relx=1.0, x=-40, y=30, anchor="se", width=100, height=28)
+
+        #最小化ボタン
+
 
         # Sizegrip
         self.sizegrip = ttk.Sizegrip(self.main_border)
         self.sizegrip.pack(anchor='se',side='right')
-
-        #移動つまみ
-        self.idou_tumami = DragHandle(self)
-        self.idou_tumami.place(relx=1.0, x=-40, y=30, anchor="se", width=100, height=28)
 
         #透明部分
         self.toumei_frame = tk.Frame(self.main_border,bg=Honyaku.TOUMEI_IRO)
@@ -62,7 +65,7 @@ class Honyaku(tk.Tk):
 
         #翻訳する
         translator = GoogleTranslator(source='en', target='ja')
-        for box, text, confidence in ocr_result:                
+        for bbox, text in ocr_result:                
             # 1行ずつ翻訳する
             translated_text = translator.translate(text)
             

@@ -1,4 +1,4 @@
-#複数ウインドウ時共通で使うかもしれないボタン
+#共通で使えるかもしれないボタン
 import tkinter as tk
 
 class CloseButton(tk.Button):
@@ -15,7 +15,6 @@ class CloseButton(tk.Button):
         }
         default_style.update(kwargs)
         super().__init__(master, command=command or master.destroy, **default_style)
-
 
 class DragHandle(tk.Label):
     """掴んで移動するためのラベル。バインド先はtarget_window(省略時はmaster)"""
@@ -44,3 +43,22 @@ class DragHandle(tk.Label):
         new_x = self.target_window.winfo_x() + delta_x
         new_y = self.target_window.winfo_y() + delta_y
         self.target_window.geometry(f"+{new_x}+{new_y}")
+
+class MinimizeButton(tk.Button):
+    def __init__(self,master, **kwargs):
+        default_style = {
+            "text": " - ",
+            "fg": "white",
+            "bg": "#2c3e50",
+            "activebackground": "#3c3fe7",
+            "activeforeground": "white",
+            "bd": 3,
+            "font": ("Arial", 12),
+        }
+        default_style.update(kwargs)
+        self.master=master 
+
+        super().__init__(master,command=self._minimize, **default_style)
+
+    def _minimize(self):
+        

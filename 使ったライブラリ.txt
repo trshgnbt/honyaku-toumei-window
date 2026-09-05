@@ -1,3 +1,4 @@
 easyocr  1.7.2
-Pillow  12.3.0
 deep_translator 1.11.4
+
+pyautogui
