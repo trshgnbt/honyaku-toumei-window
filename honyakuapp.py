@@ -1,12 +1,14 @@
+from typing import Final
+import warnings
+import os
 import tkinter as tk
 from tkinter import ttk
 import easyocr
-from deep_translator import GoogleTranslator
 import pyautogui
 import numpy as np
-from typing import Final
+import argostranslate.translate
 
-from button_commons import CloseButton, DragHandle, MinimizeButton
+from button_commons import CloseButton, DragHandle
 
 class Honyaku(tk.Tk):
     TOUMEI_IRO: Final = "#124356"
@@ -81,6 +83,7 @@ class Honyaku(tk.Tk):
 
     #スクリーンショットボタンの処理
     def sukusyo(self):
+        #スクショする
         width = self.winfo_width()
         height = self.winfo_height() -30
         x = self.winfo_x()
@@ -91,22 +94,21 @@ class Honyaku(tk.Tk):
         img_np = np.array(img)
         #OCR
         ocr_reader = easyocr.Reader(['en'])
-        ocr_result = ocr_reader.readtext(img_np)
+        ocr_results = ocr_reader.readtext(img_np,detail=0)
+
+        ocr_result_line =" ".join(ocr_results).strip() # type: ignore
+
+        # for box, text, confidence  in ocr_results:
+        #     return
 
         #翻訳する
-        translator = GoogleTranslator(source='en', target='ja')
-        for bbox, text in ocr_result:                
-            # 1行ずつ翻訳する
-            translated_text = translator.translate(text)
-            
-            # 元の英語と、翻訳した日本語を表示
-            print(f"元データ: {text}")
-            print(f"翻訳結果: {translated_text}")
-            print("-" * 30)
-
-        print("翻訳完了")
+        honyakukekka = argostranslate.translate.translate(ocr_result_line, "en", "ja")
+        print(honyakukekka)
 
 
-if __name__ == "__main__":    
+if __name__ == "__main__":
+    warnings.filterwarnings("ignore", category=UserWarning)
+    os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
     app = Honyaku()
     app.mainloop()
