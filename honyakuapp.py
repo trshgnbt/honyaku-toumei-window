@@ -1,4 +1,4 @@
-from typing import Final
+from typing import Final, List
 import warnings
 import os
 import tkinter as tk
@@ -17,8 +17,10 @@ class Honyaku(tk.Tk):
         super().__init__()
 
         self._is_minimized = False
+        # 表示した翻訳ラベルを管理するリスト（次回実行時に消去するため）
+        self.translation_labels: List[tk.Label] = []
        
-        self.title("タイトル")
+        self.title("翻訳")
         self.geometry("400x300+200+100")
         self.wm_attributes("-topmost", True)#最前面
         self.overrideredirect(True)#枠非表示
@@ -83,9 +85,14 @@ class Honyaku(tk.Tk):
 
     #スクリーンショットボタンの処理
     def sukusyo(self):
+        #スクショ前に翻訳結果ラベルを消す
+        for label in self.translation_labels:
+            label.destroy()
+        self.translation_labels.clear()
+
         #スクショする
         width = self.winfo_width()
-        height = self.winfo_height() -30
+        height = self.winfo_height() -55
         x = self.winfo_x()
         y = self.winfo_y() +30
         img = pyautogui.screenshot('temp.png', region=(x, y, width, height))
@@ -94,16 +101,44 @@ class Honyaku(tk.Tk):
         img_np = np.array(img)
         #OCR
         ocr_reader = easyocr.Reader(['en'])
-        ocr_results = ocr_reader.readtext(img_np,detail=0)
+        ocr_results = ocr_reader.readtext(img_np)
 
-        ocr_result_line =" ".join(ocr_results).strip() # type: ignore
+        for box, text, confidence  in ocr_results:
+            text_clean = text.strip()
+            #OCRの確信度が低いものはスキップする
+            if not text_clean or len(text_clean) < 2 or confidence < 0.3: # type: ignore
+                continue
 
-        # for box, text, confidence  in ocr_results:
-        #     return
+            #argoで翻訳する
+            try:
+                honyakukekka = argostranslate.translate.translate(text_clean, "en", "ja")
+            except Exception as e:
+                print(f"翻訳エラー: {e}")
+                continue
 
-        #翻訳する
-        honyakukekka = argostranslate.translate.translate(ocr_result_line, "en", "ja")
-        print(honyakukekka)
+            #翻訳結果を表示する
+            # boxは [[左上x, 左上y], [右上x, 右上y], [右下x, 右下y], [左下x, 左下y]]という構造になっている
+            x_min = int(box[0][0])
+            y_min = int(box[0][1])
+            x_max = int(box[2][0])
+            y_max = int(box[2][1])
+
+            box_width = x_max - x_min
+            box_height = y_max - y_min
+
+            #元の英文の上に重なるように日本語のLabelを配置
+            font_size = max(9, int(box_height * 0.6))
+            lbl = tk.Label(
+                self.toumei_frame,
+                text=honyakukekka,
+                bg="black",
+                fg="white",
+                font=("MS Gothic", font_size),
+                wraplength=box_width, # ラベル幅に合わせて自動改行
+                justify="left"
+            )
+            #配置
+            lbl.place(x=x_min, y=y_min, width=box_width, height=box_height)           
 
 
 if __name__ == "__main__":
