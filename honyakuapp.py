@@ -28,7 +28,7 @@ class Honyaku(tk.Tk):
         self.configure(bg=Honyaku.TOUMEI_IRO)  # ウィンドウ自体の背景を透明色にする
 
         #枠線
-        self.main_border = tk.Frame(self, bg="#00ff00", bd=3)
+        self.main_border = tk.Frame(self, bg="#0c490c", bd=3)
         self.main_border.place(x=0, y=30, relwidth=1.0, relheight=1.0, height=-30)
 
         # 閉じるボタン (×)
