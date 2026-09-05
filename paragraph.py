@@ -1,6 +1,5 @@
 from typing import Final, List
 import warnings
-import os
 import tkinter as tk
 from tkinter import ttk
 import easyocr
@@ -95,7 +94,7 @@ class Honyaku(tk.Tk):
         
         # 2. スクショする範囲の計算
         width = self.winfo_width()
-        height = self.winfo_height() - 30
+        height = self.winfo_height() - 55
         x = self.winfo_x()
         y = self.winfo_y() + 30
         # スクリーンショットを取得
@@ -105,7 +104,7 @@ class Honyaku(tk.Tk):
         img_np = np.array(img)
         
         # 3. EasyOCRの実行（paragraph=True）
-        ocr_reader = easyocr.Reader(['en'])
+        ocr_reader = easyocr.Reader(['en','ja'])
         ocr_results = ocr_reader.readtext(img_np, paragraph=True)
         print(ocr_results)
 
@@ -118,7 +117,8 @@ class Honyaku(tk.Tk):
 
         # 4. 検出された文字（段落ごと）に処理をする
         for box, text in ocr_results:
-            text_clean = text.strip()
+            #マルチバイト文字を除去する
+            text_clean = text.encode('ascii', 'ignore').decode('ascii')
             if not text_clean or len(text_clean) < 2:
                 continue
 
@@ -185,7 +185,6 @@ class Honyaku(tk.Tk):
 
 if __name__ == "__main__":
     warnings.filterwarnings("ignore", category=UserWarning)
-    os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
     app = Honyaku()
     app.mainloop()
