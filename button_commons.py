@@ -17,6 +17,22 @@ class CloseButton(tk.Button):
         super().__init__(master, command=command or master.destroy, **default_style)
 
 
+class MinimizeButton(tk.Button):
+    """最小化ボタン。command未指定ならmaster.iconifyを使う"""
+    def __init__(self, master, command=None, **kwargs):
+        default_style = {
+            "text": " _ ",
+            "fg": "white",
+            "bg": "#2c3e50",
+            "activebackground": "#95a5a6",
+            "activeforeground": "white",
+            "bd": 3,
+            "font": ("Arial", 12),
+        }
+        default_style.update(kwargs)
+        super().__init__(master, command=command or master.iconify, **default_style)
+
+
 class DragHandle(tk.Label):
     """掴んで移動するためのラベル。バインド先はtarget_window(省略時はmaster)"""
     def __init__(self, master, target_window=None, text=" ☰ 掴んで移動 ", **kwargs):

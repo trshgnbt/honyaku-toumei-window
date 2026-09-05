@@ -6,7 +6,7 @@ import pyautogui
 import numpy as np
 from typing import Final
 
-from button_commons import CloseButton, DragHandle
+from button_commons import CloseButton, MinimizeButton, DragHandle
 
 class Honyaku(tk.Tk):
     TOUMEI_IRO: Final = "#124356"
@@ -25,9 +25,13 @@ class Honyaku(tk.Tk):
         self.main_border = tk.Frame(self, bg="#00ff00", bd=3)
         self.main_border.place(x=0, y=30, relwidth=1.0, relheight=1.0, height=-30)
 
-        # 閉じるボタン (×)
+        # 最小化ボタン ( _ ) と閉じるボタン (×)
+        self.minimize_button = MinimizeButton(self)
+        # 右端から少し内側に配置
+        self.minimize_button.place(relx=1.0, x=-70, y=30, anchor="se")
+
         self.close_button = CloseButton(self)
-        self.close_button.place(relx=1.0, y=30, anchor="se")
+        self.close_button.place(relx=1.0, x=-10, y=30, anchor="se")
 
         # Sizegrip
         self.sizegrip = ttk.Sizegrip(self.main_border)
