@@ -100,7 +100,7 @@ class Honyaku(tk.Tk):
         x = self.toumei_frame.winfo_rootx()
         y = self.toumei_frame.winfo_rooty()
         # スクリーンショットを取得
-        img = pyautogui.screenshot('temp.png',region=(x, y, width, height))
+        img = pyautogui.screenshot(region=(x, y, width, height))
 
         # numpy配列に変換する
         img_np = np.array(img)
