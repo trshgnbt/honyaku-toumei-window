@@ -92,6 +92,7 @@ class Honyaku(tk.Tk):
         for label in self.translation_labels:
                 label.destroy()       # パーツ自体を完全に破棄する
         self.translation_labels.clear()
+        self.update()
         
         # 2. スクショする範囲の計算
         width = self.toumei_frame.winfo_width()
@@ -99,7 +100,7 @@ class Honyaku(tk.Tk):
         x = self.toumei_frame.winfo_rootx()
         y = self.toumei_frame.winfo_rooty()
         # スクリーンショットを取得
-        img = pyautogui.screenshot('temp.png',region=(x, y, width, height))
+        img = pyautogui.screenshot(region=(x, y, width, height))
 
         # numpy配列に変換する
         img_np = np.array(img)
