@@ -19,8 +19,11 @@ class Honyaku(tk.Tk):
         self._is_minimized = False
         # 表示した翻訳ラベルを管理するリスト（次回実行時に消去するため）
         self.translation_labels: List[tk.Label] = []
+        #あらかじめ呼び出しておく
+        self.ocr_reader = easyocr.Reader(['en','ja'])
+        self.transtator = argostranslate.translate
        
-        self.title("タイトル")
+        self.title("翻訳")
         self.geometry("400x300+200+100")
         self.wm_attributes("-topmost", True)#最前面
         self.overrideredirect(True)#枠非表示
@@ -91,20 +94,18 @@ class Honyaku(tk.Tk):
         self.translation_labels.clear()
         
         # 2. スクショする範囲の計算
-        width = self.winfo_width()
-        height = self.winfo_height() - 55
-        x = self.winfo_x()
-        y = self.winfo_y() + 30
+        width = self.toumei_frame.winfo_width()
+        height = self.toumei_frame.winfo_height()
+        x = self.toumei_frame.winfo_rootx()
+        y = self.toumei_frame.winfo_rooty()
         # スクリーンショットを取得
-        img = pyautogui.screenshot(region=(x, y, width, height))
+        img = pyautogui.screenshot('temp.png',region=(x, y, width, height))
 
         # numpy配列に変換する
         img_np = np.array(img)
         
         # 3. EasyOCRの実行（paragraph=True）
-        ocr_reader = easyocr.Reader(['en','ja'])
-        ocr_results = ocr_reader.readtext(img_np, paragraph=True)
-        print(ocr_results)
+        ocr_results = self.ocr_reader.readtext(img_np, paragraph=True)
 
         # 配置済みのラベルの位置を記録するリスト
         placed_rects = []
@@ -122,7 +123,7 @@ class Honyaku(tk.Tk):
 
             # 5. Argos Translateで翻訳
             try:
-                honyakukekka = argostranslate.translate.translate(text_clean, "en", "ja")
+                honyakukekka = self.transtator.translate(text_clean, "en", "ja")
             except Exception as e:
                 print(f"翻訳エラー: {e}")
                 continue
@@ -134,7 +135,7 @@ class Honyaku(tk.Tk):
             
             box_width = max(50, x_max - x_min)
 
-            # 💡 【重要】翻訳後の日本語が何行になるかを簡易計算して高さを動的に決める
+            # 【重要】翻訳後の日本語が何行になるかを簡易計算して高さを動的に決める
             # フォントサイズ11の場合、日本語1文字あたり約11〜12ピクセルの幅を使います
             chars_per_line = max(1, box_width // 12)  # 1行に入る文字数
             
