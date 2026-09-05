@@ -1,4 +1,0 @@
-easyocr  1.7.2
-deep_translator 1.11.4
-
-pyautogui
