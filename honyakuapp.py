@@ -92,6 +92,7 @@ class Honyaku(tk.Tk):
         for label in self.translation_labels:
                 label.destroy()       # パーツ自体を完全に破棄する
         self.translation_labels.clear()
+        self.update()
         
         # 2. スクショする範囲の計算
         width = self.toumei_frame.winfo_width()
