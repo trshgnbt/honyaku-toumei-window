@@ -56,9 +56,8 @@ class MinimizeButton(tk.Button):
             "font": ("Arial", 12),
         }
         default_style.update(kwargs)
-        self.master=master 
 
         super().__init__(master,command=self._minimize, **default_style)
 
     def _minimize(self):
-        
+        return
