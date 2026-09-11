@@ -3,7 +3,7 @@ import warnings
 import tkinter as tk
 from tkinter import ttk
 import easyocr
-import pyautogui
+from PIL import ImageGrab
 import numpy as np
 import math
 import argostranslate.translate
@@ -11,7 +11,6 @@ import argostranslate.translate
 from button_commons import CloseButton, DragHandle
 
 class Honyaku(tk.Tk):
-    TOUMEI_IRO: Final = "#124356"
     
     def __init__(self):
         super().__init__()
@@ -27,8 +26,9 @@ class Honyaku(tk.Tk):
         self.geometry("400x300+200+100")
         self.wm_attributes("-topmost", True)#最前面
         self.overrideredirect(True)#枠非表示
-        self.attributes("-transparentcolor", Honyaku.TOUMEI_IRO)#透明にする色を指定
-        self.configure(bg=Honyaku.TOUMEI_IRO)  # ウィンドウ自体の背景を透明色にする
+        self.TOUMEI_IRO:Final = "#124356"
+        self.attributes("-transparentcolor", self.TOUMEI_IRO)#透明にする色を指定
+        self.configure(bg=self.TOUMEI_IRO)  # ウィンドウ自体の背景を透明色にする
 
         #枠線
         self.main_border = tk.Frame(self, bg="#066322", bd=3)
@@ -61,7 +61,7 @@ class Honyaku(tk.Tk):
         self.sizegrip.pack(anchor='se',side='right')
 
         #透明部分
-        self.toumei_frame = tk.Frame(self.main_border,bg=Honyaku.TOUMEI_IRO)
+        self.toumei_frame = tk.Frame(self.main_border,bg=self.TOUMEI_IRO)
         self.toumei_frame.pack(fill='both', expand=True)
 
         #スクリーンショットボタン
@@ -100,8 +100,7 @@ class Honyaku(tk.Tk):
         x = self.toumei_frame.winfo_rootx()
         y = self.toumei_frame.winfo_rooty()
         # スクリーンショットを取得
-        img = pyautogui.screenshot(region=(x, y, width, height))
-
+        img = ImageGrab.grab(bbox=(x,y,(x+width),(y+height)))
         # numpy配列に変換する
         img_np = np.array(img)
         
